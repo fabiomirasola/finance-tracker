@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom"
 import { useState } from "react";
+import { login } from "../../services/auth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -9,27 +10,13 @@ export default function Login() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
     try {
-      const res = await fetch("http://localhost:3333/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) throw new Error("Invalid credentials");
-
-      const data = await res.json();
-
-      localStorage.setItem("token", data.token.token);
-
-      navigate("/");
-    } catch (err) {
+      await login({email, password});
+      navigate("/"); 
+    } catch (error) {
       alert("Login failed");
     }
   }
-
-
   return (
     <div className="p-4 text-center bg-gray-100 h-screen flex flex-col items-center justify-center">
       <div className="bg-white p-8  shadow-md inline-block rounded-2xl w-100 ">
