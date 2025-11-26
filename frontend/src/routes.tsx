@@ -6,6 +6,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Transactions from "./pages/transactions/Transactions";
 import Categories from "./pages/categories/Categories";
 import Profile from "./pages/profile/Profile";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -18,7 +19,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <AppLayout/>,
+    element: 
+    <ProtectedRoute>
+      <AppLayout/>
+    </ProtectedRoute>
+    ,
     children:[
       {index: true, element: <Dashboard/>},
       {path: "transactions", element: <Transactions/>},
