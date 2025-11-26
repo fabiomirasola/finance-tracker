@@ -62,3 +62,20 @@ export async function logout() {
     console.error("Logout error", error);
   }
 }
+
+export async function getMe() {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No token found");
+
+  const response = await fetch(`${API_URL}/get`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch profile");
+  }
+  const data = await response.json();
+  return data;
+}
