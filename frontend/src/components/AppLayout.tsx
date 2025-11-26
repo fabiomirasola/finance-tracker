@@ -1,14 +1,7 @@
 
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 
 export default function AppLayout() {
-  const navigate = useNavigate();
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-
   return (
     <div className="flex h-screen bg-gray-100">
       <aside className="w-64 bg-white shadow-md p-6">
@@ -19,11 +12,7 @@ export default function AppLayout() {
           <Link className="hover:text-blue-500" to="/categories">Categories</Link>
           <Link className="hover:text-blue-500" to="/profile">Profile</Link>
         </nav>
-        <button onClick={logout} className="mt-8 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600" >
-          <Link to="/login">Logout</Link>
-        </button>
       </aside>
-
       <main className="flex-1 p-6">
         <Outlet />
       </main>

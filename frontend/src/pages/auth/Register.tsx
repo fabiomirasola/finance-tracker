@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom"
 import { useState } from "react";
+import { register } from "../../services/auth";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -11,23 +12,9 @@ export default function Register() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
     try {
-      const res = await fetch("http://localhost:3333/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullName, email, password }),
-      });
-
-      if (!res.ok) throw new Error("Invalid credentials");
-
-      const data = await res.json();
-
-      if(data){
-        alert("Registration successful");
-        return navigate("/login");
-      } 
-
+      await register({fullName, email, password});
+      navigate("/login"); 
     } catch (err) {
       alert("Register failed");
     }
