@@ -13,6 +13,7 @@ router.get('/', async () => {
 
 router.post('/register', [AuthController, 'register'])
 router.post('/login', [AuthController, 'login'])
+router.get('/get', [AuthController, 'getMe'])
 router.post('/logout', [AuthController, 'logout'])
   .use(middleware.auth({ guards: ['api'] }))
 
