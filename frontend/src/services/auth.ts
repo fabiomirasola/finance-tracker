@@ -44,3 +44,21 @@ export async function register (data: {fullName: string, email: string, password
     alert("Registration failed");
   }
 }
+
+export async function logout() {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    await fetch(`${API_URL}/logout`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    localStorage.removeItem("token");
+  } catch (error) {
+    console.error("Logout error", error);
+  }
+}
