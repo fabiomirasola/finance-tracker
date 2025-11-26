@@ -87,7 +87,7 @@ export default function Transactions() {
                     {transaction.type === 'income' ? '+' : '-'}
                     {transaction.amount.toFixed(2)}€ 
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">{formatDate(transaction.created_at)}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{formatDate(transaction.createdAt)}</td>
                 </tr>
               ))
             ) : (
