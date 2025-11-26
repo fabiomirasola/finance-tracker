@@ -7,7 +7,7 @@ export default class TransactionsController {
   }
 
   public async store({auth, request}: HttpContext) {
-    const data = request.only(['title', 'amount', 'type', 'categoryId', 'createdAt']);
+    const data = request.only(['title', 'amount', 'type', 'category_id', 'createdAt']);
     const transaction = await Transaction.create({...data, userId: auth.user!.id});
     return transaction;
   }
