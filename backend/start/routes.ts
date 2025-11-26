@@ -18,6 +18,8 @@ router.post('/logout', [AuthController, 'logout'])
   .use(middleware.auth({ guards: ['api'] }))
 
 router.get('/categories', [CategoriesController, 'index'])
+router.delete('/categories/:id', [CategoriesController, 'delete'])
+router.post('/categories', [CategoriesController, 'store']).use(middleware.auth())
 
 router.group(() => {
   router.get('/transactions', [TransactionsController, 'index'])
