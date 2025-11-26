@@ -41,4 +41,11 @@ export default class AuthController {
     await User.accessTokens.delete(user, user.currentAccessToken.identifier)
     return response.ok({message: 'Logged out successfully'});
   }
+
+  public async getMe ({auth, response}: HttpContext) {
+    const user = await auth.use('api').authenticate();
+    return response.ok({
+      user: {id: user.id, email: user.email, fullName: user.fullName}
+    });
+  }
 }
