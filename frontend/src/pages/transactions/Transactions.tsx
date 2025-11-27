@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Transaction } from '../../types/TransactionType';
 import { fetchTransactions } from '../../services/transactions';
+import { fetchCategories } from '../../services/categories';
 
 
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]); 
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string|null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [transactionType, setTransactionType] = useState<'income' | 'expense'>('income');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+
 
   const getTransactions = async () => {
     try {
@@ -25,6 +31,24 @@ export default function Transactions() {
   useEffect(() => {
     getTransactions();
   }, []); 
+
+  const getCategories = async () => {
+      try{
+        setLoading(true);
+        setError(null);
+        const data = await fetchCategories();
+        setCategories(data);
+      }catch (error) {
+        setError("Failed to fetch categories");
+      }
+      finally{
+        setLoading(false);
+      }
+    }
+  
+    useEffect(() => {
+      getCategories();
+    }, []);
 
   console.log(transactions);
 
@@ -49,20 +73,93 @@ export default function Transactions() {
     return type === 'income' ? 'text-green-600' : 'text-red-600';
   };
 
-  console.log(transactions);
-
   return (
     <div className="p-4 flex gap-4 flex-col text-2xl">
       <div className="flex flex-row justify-between pb-8 items-center">
         <h1 className="text-5xl font-bold mb-0">Transactions</h1>
-        <button className="bg-green-500 text-gray-200 px-4 py-2 rounded-xl hover:cursor-pointer flex gap-2 items-center hover:bg-green-600 transition duration-150">
-          <span className="text-green-500 text-3xl rounded-full w-8 h-8 flex items-center justify-center bg-gray-200">
+        <button 
+          className="bg-green-500 text-gray-200 px-4 py-2 rounded-xl hover:cursor-pointer flex gap-2 items-center hover:bg-green-600 transition duration-150 "  
+          onClick={() => setShowModal(true)}
+        >
+          <span className="text-green-500 text-3xl rounded-full w-10 h-10 flex justify-center bg-gray-200">
             + 
           </span>
           Ajouter une transaction
         </button>
       </div>
+      {showModal && (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-white p-6 rounded-2xl shadow-xl w-[420px] flex flex-col gap-4">
+            <div className="flex items-center justify-between pb-5">
+              <h2 className="text-2xl font-semibold">Ajouter une transaction</h2>
 
+              <button 
+                onClick={() => setShowModal(false)}
+                className="text-gray-500 hover:text-gray-700 text-2xl leading-none hover:cursor-pointer"
+              >
+                ×
+              </button>
+            </div>
+            <div className="flex gap-0 mb-2 border-gray-800">
+              <button
+                onClick={() => setTransactionType('income')}
+                className={`py-2 px-2 rounded-l-full font-medium text-sm transition-all duration-200 flex items-center justify-center gap-1 ${
+                  transactionType === 'income'
+                    ? 'bg-green-500 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                Income
+              </button>
+
+              <button
+                onClick={() => setTransactionType('expense')}
+                className={` py-2 px-2 rounded-r-full font-medium text-sm transition-all duration-200 flex items-center justify-center gap-1 ${
+                  transactionType === 'expense'
+                    ? 'bg-red-500 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                Expense
+              </button>
+            </div>
+            <form className="flex flex-col gap-4">
+              <input
+                type="text"
+                placeholder="Titre"
+                className="p-2 rounded text-base w-full bg-gray-100"
+              />
+              <input
+                type="number"
+                placeholder="Montant"
+                className="p-2 rounded text-base w-full bg-gray-100"
+              />
+              <select 
+                className="p-2 rounded text-base w-full bg-gray-100"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value="" disabled hidden>
+                  Sélectionne une catégorie
+                </option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white text-sm px-4 py-2 rounded hover:bg-green-700"
+                >
+                  Ajouter
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
       <div className="overflow-x-auto shadow-lg rounded-lg border">
         <table className="min-w-full divide-y divide-gray-200 text-left text-lg">
           <thead className="bg-gray-50">
