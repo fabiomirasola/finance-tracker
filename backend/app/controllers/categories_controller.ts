@@ -8,10 +8,16 @@ export default class CategoriesController {
     return Category.all();
   }
   
-  public async store({ request }: HttpContext) {
-    const data = request.only(['name']);
-    const category = await Category.create(data);
-    return category;
+  public async store({ request, auth }: HttpContext) {
+    const user = auth.user!
+    const name = request.input("name")
+
+    const category = await Category.create({
+      name,
+      userId: user.id
+    })
+
+    return category
   }
 
   public async delete({ params }: HttpContext) {

@@ -19,9 +19,11 @@ router.post('/change-password', [AuthController, 'changePassword'])
 router.post('/logout', [AuthController, 'logout'])
   .use(middleware.auth({ guards: ['api'] }))
 
-router.get('/categories', [CategoriesController, 'index'])
-router.delete('/categories/:id', [CategoriesController, 'delete'])
-router.post('/categories', [CategoriesController, 'store']).use(middleware.auth())
+router.group(() => {
+  router.get('/categories', [CategoriesController, 'index'])
+  router.post('/categories', [CategoriesController, 'store'])
+  router.delete('/categories/:id', [CategoriesController, 'delete'])
+}).use(middleware.auth())
 
 router.group(() => {
   router.get('/transactions', [TransactionsController, 'index'])
