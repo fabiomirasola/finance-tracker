@@ -48,4 +48,20 @@ export default class AuthController {
       user: {id: user.id, email: user.email, fullName: user.fullName}
     });
   }
+
+  public async changePassword ({auth, request, response}: HttpContext) {
+    const user = await auth.use('api').authenticate();
+    const {oldPassword, newPassword} = request.only(['oldPassword', 'newPassword']);
+
+    const isPasswordValid = await user.verifyPassword(oldPassword);
+
+    if(!isPasswordValid){
+      return response.badRequest({message: 'Old password is incorrect'});
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    return response.ok({message: 'Password changed successfully'});
+  }
 }
