@@ -4,8 +4,16 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 export default class CategoriesController {
 
-  public async index() {
-    return Category.all();
+  public async index({ auth }: HttpContext) {
+    const user = auth.user! 
+
+    const categories = await Category.query()
+      .where('user_id', user.id)
+      .orWhereNull('user_id')    
+      .select('*') 
+      .orderBy('name', 'asc') 
+
+    return categories;
   }
   
   public async store({ request, auth }: HttpContext) {
