@@ -43,8 +43,8 @@ export async function createCategory(name: string) {
       throw new Error('Failed to create category');
     }
 
-    const category = await response.json();
-    return category;
+    const newCategory = await response.json();
+    return newCategory;
   } catch (error) {
     console.error("Error creating category:", error);
     throw error;
