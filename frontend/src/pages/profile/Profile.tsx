@@ -64,7 +64,7 @@ export default function Profile() {
             <h3 className="text-lg font-semibold">Modifier le mot de passe</h3>
             <button 
               onClick={()=>setShowPasswordForm(!showPasswordForm)} 
-              className="text-gray-500 hover:text-gray-700 text-xl font-bold px-2"
+              className="text-gray-500 hover:text-gray-700 text-xl font-bold px-2 hover:cursor-pointer"
             >
               ×
             </button>
