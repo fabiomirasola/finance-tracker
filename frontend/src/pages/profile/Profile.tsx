@@ -123,10 +123,9 @@ export default function Profile() {
         </div>
       )}
       </div>
-      <button onClick={handleLogout} className="mt-8 w-100 bg-red-500 text-white py-2 rounded-xl hover:bg-red-600" >
+      <button onClick={handleLogout} className="mt-8 w-100 bg-red-500 text-white py-2 rounded-xl hover:bg-red-600 hover:cursor-pointer" >
         Logout
       </button>
-
     </div>
   )
 }
