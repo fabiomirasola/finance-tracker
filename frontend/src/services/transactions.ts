@@ -23,3 +23,32 @@ export async function fetchTransactions() {
     console.error("Error fetching transactions:", error);
   }  
 }
+
+export async function addTransaction(Transaction: { amount: number; type: 'income' | 'expense'; category_id: number; title: string}) {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No authentication token found");
+
+
+  try {
+    const response = await fetch(`${API_URL}/transactions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(Transaction)
+    });
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      throw new Error(`Failed to add transaction: ${responseText}`);
+    }
+
+    const newTransaction = JSON.parse(responseText);
+    return newTransaction;
+  } catch (error) {
+    console.error("Error adding transaction:", error);
+    throw error;
+  }  
+}
