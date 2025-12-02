@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getMe, logout } from "../../services/auth";
 import { useEffect, useState } from "react";
 import { User } from "../../types/Usertype";
+import { changePassword } from "../../services/auth";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -9,6 +10,9 @@ export default function Profile() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string|null>(null);
   const [showPasswordForm, setShowPasswordForm] = useState<boolean>(false);
+  const [oldPassword, setOldPassword] = useState<string>("");
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   const handleLogout = async() => {
     await logout();
@@ -32,6 +36,25 @@ export default function Profile() {
   useEffect(() => {
     getUserInfo();
   }, []);
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      alert("Les nouveaux mots de passe ne correspondent pas.");
+      return;
+    }
+    try{
+      await changePassword(oldPassword, newPassword);
+      alert("Mot de passe changé avec succès.");
+      setShowPasswordForm(false);
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      alert("Échec du changement de mot de passe.");
+    }
+
+  }  
 
   if (loading) {
     return <div className="p-4 text-center text-2xl">Loading...</div>;
@@ -70,24 +93,30 @@ export default function Profile() {
             </button>
           </div>
 
-          <form className="flex gap-2">
+          <form className="flex gap-2" onSubmit={handleChangePassword}>
             <input
               type="password"
               placeholder="Ancien mot de passe"
               className="p-2 border rounded text-base flex-1"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
             />
             <input
               type="password"
               placeholder="Nouveau mot de passe"
               className="p-2 border rounded text-base flex-1"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
             />
             <input
               type="password"
               placeholder="Confirmer mot de passe"
               className="p-2 border rounded text-base flex-1"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
 
-            <button className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 text-base whitespace-nowrap">
+            <button className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 text-base whitespace-nowrap" type="submit">
               Valider
             </button>
           </form>
